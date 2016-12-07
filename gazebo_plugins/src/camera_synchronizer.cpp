@@ -32,30 +32,17 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include <dynamic_reconfigure/server.h>
-#include <gazebo_plugins/HokuyoConfig.h>
-
-void callback(gazebo_plugins::HokuyoConfig &config, uint32_t level)
-{
-  ROS_INFO("Reconfigure request : %f %f %i %i %i %s %i %s %f %i",
-           config.min_ang, config.max_ang, (int)config.intensity, config.cluster, config.skip,
-           config.port.c_str(), (int)config.calibrate_time, config.frame_id.c_str(), config.time_offset, (int)config.allow_unsafe_settings);
-  
-  // do nothing for now
-
-  ROS_INFO("Reconfigure to : %f %f %i %i %i %s %i %s %f %i",
-           config.min_ang, config.max_ang, (int)config.intensity, config.cluster, config.skip,
-           config.port.c_str(), (int)config.calibrate_time, config.frame_id.c_str(), config.time_offset, (int)config.allow_unsafe_settings);
-}
+#include <gazebo_plugins/vision_reconfigure.h>
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "hokuyo_node");
-  dynamic_reconfigure::Server<gazebo_plugins::HokuyoConfig> srv;
-  dynamic_reconfigure::Server<gazebo_plugins::HokuyoConfig>::CallbackType f = boost::bind(&callback, _1, _2);
-  srv.setCallback(f);
-  ROS_INFO("Starting to spin...");
-  ros::spin();
+  ros::init(argc, argv, "camera_synchronizer");
+
+  VisionReconfigure vr;
+
+  double spin_frequency = 100.0;
+  ROS_INFO("Starting to spin camera_synchronizer at %f Hz...",spin_frequency);
+  vr.spin(spin_frequency);
+
   return 0;
 }
-
